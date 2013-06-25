@@ -9,6 +9,10 @@ var horizontalSpeed = 1;
 var verticalSpeed = 1;
 var playerStep = 5;
 
+/***************************************************************************
+** Colisão
+***************************************************************************/
+
 function revertHorizontalSpeed(){
     horizontalSpeed *= -1;}
 
@@ -21,7 +25,8 @@ function checkInternalCollision(obj, box){
     obj.style.top = obj.offsetTop + verticalSpeed;
 
     return [((obj.offsetLeft >= (box.offsetWidth - obj.offsetWidth)) || (obj.offsetLeft <= 0)),
-        ((obj.offsetTop >= (box.offsetHeight - obj.offsetHeight)) || (obj.offsetTop <= 0))];
+        ((obj.offsetTop >= (box.offsetHeight - obj.offsetHeight)) || (obj.offsetTop <= 0)),
+        (obj.offsetLeft <= 0)?'L':(obj.offsetLeft >= (box.offsetWidth - obj.offsetWidth))?'R':null];
 };
 
 function checkRevertion(){
@@ -38,6 +43,8 @@ function checkRevertion(){
         direction = getDirection(computerCollision[1], Ball, Computer);
     // Nesse caso teorico toda colisão horizontal é score.
     // Verifica se é necessário reversão
+    if(internalCollisions[0])
+        addPoint(internalCollisions[2]);
     if(internalCollisions[0] || direction == 'horizontal' || direction == 'both'){
         revertHorizontalSpeed();
     }
@@ -162,6 +169,10 @@ function check(){
 
 setInterval(check, 1);
 
+/***************************************************************************
+** Movimento
+***************************************************************************/
+
 // Key Bindings
 var keyState = {};
 window.addEventListener('keydown',function(e){
@@ -190,3 +201,27 @@ function gameLoop() {
     // also redraw/animate any objects not controlled by the user
     setTimeout(gameLoop, 10);}
 gameLoop();
+
+/***************************************************************************
+** Score
+***************************************************************************/
+
+var scoreBoardLeft = document.getElementById('scoreLeft').getElementsByTagName('P')[0];
+var scoreBoardRight = document.getElementById('scoreRight').getElementsByTagName('P')[0];
+
+function addPoint(side){
+    if(side == 'L')
+        _incrementSore(scoreBoardRight, 1);
+    if(side == 'R')
+        _incrementSore(scoreBoardLeft, 1);
+    if(side == null)
+        console.log('bug');}
+
+function _incrementSore(el, quantity){
+    var value = parseInt(el.innerHTML);
+    el.innerHTML = (value + quantity).toString();
+}
+
+/***************************************************************************
+** Gameplay
+***************************************************************************/
