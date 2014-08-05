@@ -1,0 +1,37 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+
+        <p id="out"></p>
+
+        <script>
+
+        var socket = io();
+
+        if (window.DeviceMotionEvent) {
+          window.addEventListener('devicemotion', deviceMotionHandler, false);
+        } else {
+          document.getElementById("dmEvent").innerHTML = "Not supported."
+        }
+
+        var position;
+        function deviceMotionHandler(e) {
+          var acceleration = e.accelerationIncludingGravity;
+          position = acceleration.x;
+
+          document.getElementById("out").innerHTML = position;
+          socket.emit('sensorSend', position);
+        }
+
+        </script>
+    </body>
+</html>

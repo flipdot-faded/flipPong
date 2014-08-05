@@ -5,9 +5,12 @@ var Stage = document.getElementById('stage');
 var Player = document.getElementById('player');
 var Computer = document.getElementById('computer');
 
-var horizontalSpeed = 1;
-var verticalSpeed = 1;
-var playerStep = 5;
+var additionSpeed = 1;
+var horizontalSpeed = 1*additionSpeed;
+var verticalSpeed = 1*additionSpeed;
+var playerStep = 5*additionSpeed;
+
+var socket = io.connect();
 
 /***************************************************************************
 ** Colisão
@@ -66,7 +69,7 @@ function getDirection(collisionResults, source, target){
     // Aqui eu SEI que existe a colisão, agora baseado na forma do retângulo de colisão eu faço a reversão
     // Se for maior na horizontal o retangulo, inverte somente o vertical
     // Se for maior na vertical o retangulo, inverte semente na horizontal
-    
+
     for(var i in collisionResults)
         collisionResults[i] = collisionResults[i]? '1': '0';
     collisionResults = collisionResults.join('');
@@ -141,7 +144,7 @@ function checkCollision(source, target){
     var horizontalCollisionInside = (target.offsetLeft < source.offsetLeft) && ((source.offsetLeft + source.offsetWidth) < (target.offsetLeft + target.offsetWidth));
 
     var horizontalCollision = horizontalCollisionFromLeft || horizontalCollisionFromRight || horizontalCollisionInside;
-        
+
     // Vertical
     // TOP1 < TOP2 && TOP2 < BOTTOM1 (Comming from up)
     var verticalCollisionFromTop = (source.offsetTop < target.offsetTop) && (target.offsetTop < (source.offsetTop + source.offsetHeight));
@@ -158,10 +161,10 @@ function checkCollision(source, target){
     console.log('horizontal Collisions: Left: ' + horizontalCollisionFromLeft.toString() + ' Right: ' + horizontalCollisionFromRight.toString() + ' Inside: ' + horizontalCollisionInside.toString());
     console.log('vertical Collisions: Top: ' + verticalCollisionFromTop.toString() + ' Bottom: ' + verticalCollisionFromBottom.toString() + ' Inside: ' + verticalCollisionInside.toString());*/
 
-    return [horizontalCollision && verticalCollision, 
-    [   verticalCollisionFromTop || verticalCollisionInside, 
-        horizontalCollisionFromRight || horizontalCollisionInside, 
-        verticalCollisionFromBottom || verticalCollisionInside, 
+    return [horizontalCollision && verticalCollision,
+    [   verticalCollisionFromTop || verticalCollisionInside,
+        horizontalCollisionFromRight || horizontalCollisionInside,
+        verticalCollisionFromBottom || verticalCollisionInside,
         horizontalCollisionFromLeft || horizontalCollisionInside]];}
 
 function check(){
@@ -177,19 +180,26 @@ setInterval(check, 1);
 var keyState = {};
 window.addEventListener('keydown',function(e){
     keyState[e.keyCode || e.which] = true;
-},true);    
+},true);
 window.addEventListener('keyup',function(e){
     keyState[e.keyCode || e.which] = false;
 },true);
 
+var playerPos;
+socket.on('sensorReceive', function (data) {
+  playerPos = Math.abs(data) * 30;
+});
+
 function gameLoop() {
 
-    if (keyState[38]){
-        if(Player.offsetTop > 0)
-            Player.style.top = Player.offsetTop - playerStep;}
-    if (keyState[40]){
-        if((Player.offsetTop + Player.offsetHeight) < Stage.offsetHeight)
-            Player.style.top = Player.offsetTop + playerStep;}
+    //if (keyState[38]){
+    //    if(Player.offsetTop > 0)
+    //        Player.style.top = Player.offsetTop - playerStep;}
+    //if (keyState[40]){
+    //    if((Player.offsetTop + Player.offsetHeight) < Stage.offsetHeight)
+    //        Player.style.top = Player.offsetTop + playerStep;}
+    Player.style.top = playerPos;
+
 
     if (keyState[87]){
         if(Computer.offsetTop > 0)
