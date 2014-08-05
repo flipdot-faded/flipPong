@@ -6,20 +6,23 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
 
+        </style>
         <script src="js/jquery-2.1.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
 
         <p id="out"></p>
-
-        <label for="player0">Blue</label>
-        <input type="radio" id="player0" name="player" value="0" />
-
-        <label for="player1">Red</label>
-        <input type="radio" id="player1" name="player" value="1" />
-
+        <div id="blue">
+          <label for="player0">Blue</label>
+          <input type="radio" id="player0" name="player" value="0" />
+        </div>
+        <div id="red">
+          <label for="player1">Red</label>
+          <input type="radio" id="player1" name="player" value="1" />
+        </div>
         <script>
 
         var socket = io();
@@ -30,6 +33,7 @@
           document.getElementById("dmEvent").innerHTML = "Not supported."
         }
 
+        var lastData;
         function deviceMotionHandler(e) {
           var acceleration = e.accelerationIncludingGravity;
           var position = acceleration.y;
@@ -38,11 +42,15 @@
           if(!position) return;
 
           document.getElementById("out").innerHTML = position;
-          socket.emit('sensorSend', {
+          lastData = {
             pos: position,
             player: player
-          });
+          };
         }
+
+        setInterval(function(){
+          socket.emit('sensorSend', lastData);
+        }, 1000 / 5)
 
         </script>
     </body>
