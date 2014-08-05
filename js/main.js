@@ -185,28 +185,40 @@ window.addEventListener('keyup',function(e){
     keyState[e.keyCode || e.which] = false;
 },true);
 
-var playerPos;
+var state = {};
 socket.on('sensorReceive', function (data) {
-  playerPos = Math.abs(data) * 30;
+  var pos = data.pos;
+  var player = data.player;
+  pos += 3;
+  var cap = 1;
+  if(pos > cap * -1 && pos < cap) {
+    state[player] = 0;
+  } else if(pos <= cap * -1) {
+    state[player] = -1;
+  } else if(pos >= cap) {
+    state[player] = 1;
+  } else {
+    throw "unknown state: "+pos;
+  }
 });
 
 function gameLoop() {
 
-    //if (keyState[38]){
-    //    if(Player.offsetTop > 0)
-    //        Player.style.top = Player.offsetTop - playerStep;}
-    //if (keyState[40]){
-    //    if((Player.offsetTop + Player.offsetHeight) < Stage.offsetHeight)
-    //        Player.style.top = Player.offsetTop + playerStep;}
-    Player.style.top = playerPos;
+    var direction = -1;
+    if (state[0] === direction){
+        if(Player.offsetTop > 0)
+            Player.style.top = Player.offsetTop - playerStep;}
+    if (state[0] === direction*-1){
+        if((Player.offsetTop + Player.offsetHeight) < Stage.offsetHeight)
+            Player.style.top = Player.offsetTop + playerStep;}
 
-
-    if (keyState[87]){
+    if (state[1] === direction){
         if(Computer.offsetTop > 0)
             Computer.style.top = Computer.offsetTop - playerStep;}
-    if (keyState[83]){
+    if (state[1] === direction*-1){
         if((Computer.offsetTop + Computer.offsetHeight) < Stage.offsetHeight)
             Computer.style.top = Computer.offsetTop + playerStep;}
+
     // redraw/reposition your object here
     // also redraw/animate any objects not controlled by the user
     setTimeout(gameLoop, 10);}

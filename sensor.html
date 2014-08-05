@@ -7,11 +7,18 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <script src="js/jquery-2.1.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
 
         <p id="out"></p>
+
+        <label for="player0">Blue</label>
+        <input type="radio" id="player0" name="player" value="0" />
+
+        <label for="player1">Red</label>
+        <input type="radio" id="player1" name="player" value="1" />
 
         <script>
 
@@ -23,13 +30,18 @@
           document.getElementById("dmEvent").innerHTML = "Not supported."
         }
 
-        var position;
         function deviceMotionHandler(e) {
           var acceleration = e.accelerationIncludingGravity;
-          position = acceleration.x;
+          var position = acceleration.y;
+          var player = $('input[name="player"]:checked').val();
+
+          if(!position) return;
 
           document.getElementById("out").innerHTML = position;
-          socket.emit('sensorSend', position);
+          socket.emit('sensorSend', {
+            pos: position,
+            player: player
+          });
         }
 
         </script>

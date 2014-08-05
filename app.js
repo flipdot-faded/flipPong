@@ -14,7 +14,7 @@ var io = socketio(app);
 
 io.on('connection', function (socket) {
   socket.on('sensorSend', function (data) {
-    console.log(data);
+    console.log(data.pos);
     socket.broadcast.emit('sensorReceive', data);
   });
 });
