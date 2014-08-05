@@ -13,8 +13,10 @@
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
+        <div>
+          <p id="out">inital</p>
+        </div>
 
-        <p id="out"></p>
         <div id="blue">
           <label for="player0">Blue</label>
           <input type="radio" id="player0" name="player" value="0" />
@@ -30,7 +32,7 @@
         if (window.DeviceMotionEvent) {
           window.addEventListener('devicemotion', deviceMotionHandler, false);
         } else {
-          document.getElementById("dmEvent").innerHTML = "Not supported."
+          alert('no event')
         }
 
         var lastData;
@@ -38,8 +40,6 @@
           var acceleration = e.accelerationIncludingGravity;
           var position = acceleration.y;
           var player = $('input[name="player"]:checked').val();
-
-          if(!position) return;
 
           document.getElementById("out").innerHTML = position;
           lastData = {
@@ -49,6 +49,8 @@
         }
 
         setInterval(function(){
+          if(!lastData.pos) return;
+
           socket.emit('sensorSend', lastData);
         }, 1000 / 5)
 
