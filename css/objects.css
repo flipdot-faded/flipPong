@@ -87,4 +87,7 @@
     }
 #fpsDiv {
     text-align: center;
+    background-color: #000;
+    color: #fff;
+    font: sans-serif;
 }

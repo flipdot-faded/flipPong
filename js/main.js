@@ -206,7 +206,7 @@ function gameLoop() {
     var now = Date.now();
     var dt = now - lastUpdate;
     lastUpdate = now;
-    //document.write(Math.round(1000/dt)+"fps<br>")
+    document.getElementById('fpsDiv').innerHTML = (Math.round(1000/dt)+"fps<br>");
     
     playerStep = dt/2;
     
@@ -229,7 +229,7 @@ function gameLoop() {
 
     // redraw/reposition your object here
     // also redraw/animate any objects not controlled by the user
-    setTimeout(gameLoop, 5);}
+    setTimeout(gameLoop, 33);}
 gameLoop();
 
 /***************************************************************************
