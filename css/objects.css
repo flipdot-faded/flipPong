@@ -85,3 +85,11 @@
     left: 100px;
     top: 250px;
     }
+#fpsDiv {
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+    font: sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+}
