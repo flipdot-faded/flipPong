@@ -5,10 +5,10 @@ var Stage = document.getElementById('stage');
 var Player = document.getElementById('player');
 var Computer = document.getElementById('computer');
 
-var additionSpeed = 1;
-var horizontalSpeed = 1*additionSpeed;
-var verticalSpeed = 1*additionSpeed;
-var playerStep = 5*additionSpeed;
+var horizontalSpeed = 1;
+var verticalSpeed = 1;
+var playerStep = 5;
+var lastUpdate = 0;
 
 var socket = io.connect();
 
@@ -203,6 +203,14 @@ socket.on('sensorReceive', function (data) {
 });
 
 function gameLoop() {
+    var now = Date.now();
+    var dt = now - lastUpdate;
+    lastUpdate = now;
+    //document.write(Math.round(1000/dt)+"fps<br>")
+    
+    playerStep = dt/2;
+    
+    fpsDiv = "hi!";
 
     var direction = -1;
     if (state[0] === direction){
@@ -221,7 +229,7 @@ function gameLoop() {
 
     // redraw/reposition your object here
     // also redraw/animate any objects not controlled by the user
-    setTimeout(gameLoop, 10);}
+    setTimeout(gameLoop, 5);}
 gameLoop();
 
 /***************************************************************************
